@@ -1,2 +1,6 @@
 # AutoDrop
-A Network Programming Final
+A Network Programming Final Project by ...
+
+## Features Include:
++ Basic Multithreading
++ ...
