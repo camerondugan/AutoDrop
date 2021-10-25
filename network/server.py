@@ -11,7 +11,8 @@ def runServer():
         #Warning, not final code in any way
         conn, addr = server_socket.accept()
         print('Connection from: ' + str(addr))
-        thread = Thread(target=handleClient, args=conn)
+        thread = Thread(target=handleClient, args=(conn,))
+        thread.start()
         conn.close()
 
 def handleClient(conn):
