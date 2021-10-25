@@ -11,14 +11,18 @@ def runServer():
         #Warning, not final code in any way
         conn, addr = server_socket.accept()
         print('Connection from: ' + str(addr))
-        while 1:
-            data = conn.recv(1024).decode()
-            if not data:
-                break
-            print("from connected client: " + str(data))
-            data = input(' -> ')
-            conn.send(data.encode())
+        thread = Thread(target=handleClient, args=conn)
         conn.close()
+
+def handleClient(conn):
+    while 1:
+        data = conn.recv(1024).decode()
+        if not data:
+            break
+        print("from connected client: " + str(data))
+        data = input(' -> ')
+        conn.send(data.encode())
+
 
 if __name__ == '__main__':
     runServer()
