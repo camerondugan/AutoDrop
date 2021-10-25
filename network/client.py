@@ -1,3 +1,5 @@
+import socket as soc
+
 def runClient():
     while 1:
         print('running client')
