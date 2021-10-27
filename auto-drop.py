@@ -10,5 +10,5 @@ if __name__ == '__main__':
     serverThread.start()
     clientThread.start()
 
-    serverThread.join()
     clientThread.join()
+    serverThread.join()
