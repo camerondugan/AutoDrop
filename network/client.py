@@ -11,13 +11,11 @@ def runClient():
         threads = list()
         print("Starting Batch " + str(f))
         for sec in range(SecondNumToCheck):
-            clientThread = Thread(target=checkConnection, args=(f, sec,))
+            clientThread = Thread(target=connect, args=(f, sec,))
             threads.append(clientThread)
             clientThread.start()
         for thread in threads:
             thread.join()
-        
-        print("Finished Batch" + str(f))
     
     #blockSize = 300
     #while len(tQueue) > 0:
@@ -30,16 +28,20 @@ def runClient():
         #for t in running:
             #t.join()
 
-def checkConnection(first,second):
+def connect(first,second):
     try:
     #print('checking connection on ' + tools.genIp(first, second))
         s = soc.socket()
         s.settimeout(.1)
         s.connect((tools.genIp(first,second),port))
-        s.send(b'Hello')
-        s.close()
-    #print('finished ' + tools.genIp(first, second))
+        s.send(b'test.txt')
+        f = open ("test.txt", "rb")
+        l = f.read(1024)
+        while (l):
+            s.send(l)
+            l = f.read(1024)
         print("success")
+        s.close()
     except:
         pass
 
