@@ -3,9 +3,18 @@ import socket as soc
 
 ourPort = 0000
 #Change below
-FirstNumToCheck = 10
-SecondNumToCheck = 10000
-ourIp = soc.gethostbyname(soc.gethostname())
+FirstNumToCheck = 255
+SecondNumToCheck = 255
+ourIp='127.0.0.1'
+try:
+    s = soc.socket(soc.AF_INET, soc.SOCK_DGRAM)
+    s.connect(('192.0.0.1',1))
+    ourIp=s.getsockname()[0]
+except:
+    print("failed to get ip")
+    pass
+
+#ourIp = soc.gethostbyname(soc.gethostname())
 
 def genIp(first,second):
     ip = ""
@@ -22,7 +31,8 @@ def genIp(first,second):
 def scan():
     for f in range(FirstNumToCheck):
         for s in range(SecondNumToCheck):
-            print(genIp(f,s))
+            pass
+            #print(genIp(f,s))
 
 
 if __name__ == '__main__':
