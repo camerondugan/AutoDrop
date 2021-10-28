@@ -15,12 +15,15 @@ def runServer():
 def handleAClient(conn):
     FileName = conn.recv(1024).decode()
     print(FileName)
+    if (FileName):
+        conn.send(b'fnr')
 
     f = open(FileName,'xb') # Open in binary
     # We receive and write to the file.
     l = conn.recv(1024)
     while (l):
         f.write(l)    
+        l = conn.recv(1024)
     conn.close()
 
 

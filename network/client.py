@@ -35,6 +35,8 @@ def connect(first,second):
         s.settimeout(.2)
         s.connect((tools.genIp(first,second),port))
         s.send(b'test.txt')
+        confirm = s.recv(1024).decode()
+        print(confirm)
         f = open ("ToSend/test.txt", "rb")
         l = f.read(1024)
         while (l):
@@ -46,5 +48,5 @@ def connect(first,second):
         pass
 
 if __name__ == '__main__':
-    #connect(58, 145)
-    runClient()
+    connect(58, 145)
+    #runClient()
