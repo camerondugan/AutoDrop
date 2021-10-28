@@ -16,12 +16,11 @@ def handleAClient(conn):
     FileName = conn.recv(1024).decode()
     print(FileName)
 
-    f = open("Recieved/"+FileName,'wb') # Open in binary
-    while (True):
-        # We receive and write to the file.
-        l = sc.recv(1024)
-        while (l):
-            f.write(l)    
+    f = open(FileName,'xb') # Open in binary
+    # We receive and write to the file.
+    l = conn.recv(1024)
+    while (l):
+        f.write(l)    
     conn.close()
 
 

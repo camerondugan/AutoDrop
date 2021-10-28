@@ -32,10 +32,10 @@ def connect(first,second):
     try:
     #print('checking connection on ' + tools.genIp(first, second))
         s = soc.socket()
-        s.settimeout(.1)
+        s.settimeout(.2)
         s.connect((tools.genIp(first,second),port))
         s.send(b'test.txt')
-        f = open ("test.txt", "rb")
+        f = open ("ToSend/test.txt", "rb")
         l = f.read(1024)
         while (l):
             s.send(l)
@@ -46,5 +46,5 @@ def connect(first,second):
         pass
 
 if __name__ == '__main__':
-    #checkConnection(58, 145)
+    #connect(58, 145)
     runClient()
