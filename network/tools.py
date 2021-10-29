@@ -27,13 +27,32 @@ def genIp(first,second):
         ip+=c
     return ip+'.'+str(first)+'.'+str(second)
 
+#Returns an int subSection from the ip
+def parseIP(ip,section):
+    #Bug, doesn't work for 0th index
+    start = 0
+    end = 0
+    i = 0
+    periods = 0
+    for c in ip:
+        if c == '.':
+            periods += 1
+            if (periods == section):
+                start = i+1
+            elif (periods == section+1):
+                end = i
+        i += 1
+    if end == 0:
+        end == i
+    return int(ip[start:end])
+
 #Currently just prints all the ports we want to check
 def scan():
     for f in range(FirstNumToCheck):
         for s in range(SecondNumToCheck):
-            pass
-            #print(genIp(f,s))
+            print(genIp(f,s))
 
 
 if __name__ == '__main__':
+    print(ourIp)
     scan()

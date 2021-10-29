@@ -6,33 +6,28 @@ FirstNumToCheck = 256
 SecondNumToCheck = 256
 port=2272
 
-def runClient():
+def runClient(fast):
+    if (fast):
+        batch(tools.parseIP(tools.ourIp, 2))
+        return
     for f in range(FirstNumToCheck):
-        threads = list()
-        print("Starting Batch " + str(f))
-        for sec in range(SecondNumToCheck):
-            clientThread = Thread(target=connect, args=(f, sec,))
-            threads.append(clientThread)
-            clientThread.start()
-        for thread in threads:
-            thread.join()
-    
-    #blockSize = 300
-    #while len(tQueue) > 0:
-        #running = list()
-        #for i in range(blockSize):
-            #thread = tQueue.pop()
-            #if thread:
-                #running.append(thread)
-                #thread.start()
-        #for t in running:
-            #t.join()
+        batch(f)
+
+def batch(f):
+    threads = list()
+    print("Starting Batch " + str(f))
+    for sec in range(SecondNumToCheck):
+        clientThread = Thread(target=connect, args=(f, sec,))
+        threads.append(clientThread)
+        clientThread.start()
+    for thread in threads:
+        thread.join()
 
 def connect(first,second):
     try:
-    #print('checking connection on ' + tools.genIp(first, second))
+        print('checking connection on ' + tools.genIp(first, second))
         s = soc.socket()
-        s.settimeout(.2)
+        s.settimeout(.2) # if thread error, change this value
         s.connect((tools.genIp(first,second),port))
         s.send(b'test.txt')
         confirm = s.recv(1024).decode()
@@ -48,5 +43,6 @@ def connect(first,second):
         pass
 
 if __name__ == '__main__':
-    connect(58, 145)
-    #runClient()
+    #connect(58, 145)
+    runClient(True)
+    #runClient(False)
