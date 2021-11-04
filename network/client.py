@@ -9,7 +9,6 @@ port=2272
 def runClient(fast):
     if (fast):
         batch(tools.parseIP(tools.ourIp, 2))
-        return
     for f in range(FirstNumToCheck):
         batch(f)
 
