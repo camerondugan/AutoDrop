@@ -1,5 +1,5 @@
 import socket as soc
-import tools
+from network import tools
 from threading import Thread
 
 FirstNumToCheck = 256

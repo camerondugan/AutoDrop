@@ -5,7 +5,7 @@ from network import tools
 
 if __name__ == '__main__':
     serverThread = Thread(target=server.runServer)
-    clientThread = Thread(target=client.runClient)
+    clientThread = Thread(target=client.runClient,args=(True,))
 
     serverThread.start()
     clientThread.start()
