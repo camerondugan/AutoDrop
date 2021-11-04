@@ -26,9 +26,9 @@ def batch(f):
         thread.join()
 
 def connect(first,second):
-    #if tools.ourIp == tools.genIp(first, second):
-        #print("hello me")
-        #return
+    if tools.ourIp == tools.genIp(first, second):
+        print("hello me")
+        return
     try:
         print('checking connection on ' + tools.genIp(first, second))
         s = soc.socket()
