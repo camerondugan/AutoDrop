@@ -1,7 +1,7 @@
 import socket as soc
 import os
-#from network import tools
-import tools
+from network import tools
+#import tools
 from threading import Thread
 
 
@@ -26,15 +26,16 @@ def batch(f):
         thread.join()
 
 def connect(first,second):
-    if tools.ourIp == tools.genIp(first, second):
-        return
+    #if tools.ourIp == tools.genIp(first, second):
+        #print("hello me")
+        #return
     try:
         print('checking connection on ' + tools.genIp(first, second))
         s = soc.socket()
         s.settimeout(.2) # if thread error, change this value
         s.connect((tools.genIp(first,second),port))
         for file in getfiles():
-            sendFile(file)
+            sendFile(file,s)
         s.close()
     except:
         pass
@@ -49,9 +50,11 @@ def getfiles():
             files.extend(map(lambda n: os.path.join(*n), zip([dirpath] * len(filenames), filenames)))
     return files
 
-def sendFile(FileName):
+def sendFile(FileName,s):
     if (FileName == ''):
         return
+    FileName = FileName[FileName.find('/')+1:len(FileName)]
+    print(FileName)
     s.send(FileName.encode())
     confirm = s.recv(1024).decode()
     if (confirm != 'FNR'):
@@ -67,6 +70,7 @@ def sendFile(FileName):
 
 
 if __name__ == '__main__':
-    #connect(58, 145)
-    runClient(True)
+    print(getfiles())
+    connect(60, 155)
+    #runClient(True)
     #runClient(False)
