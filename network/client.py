@@ -54,6 +54,7 @@ def sendFile(FileName,s):
     if (FileName == ''):
         return
     FileName = FileName[FileName.find('/')+1:len(FileName)]
+    FileName = FileName[FileName.find('\\')+1:len(FileName)]
     print(FileName)
     s.send(FileName.encode())
     confirm = s.recv(1024).decode()
