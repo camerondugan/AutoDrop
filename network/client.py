@@ -1,6 +1,9 @@
 import socket as soc
-from network import tools
+import os
+#from network import tools
+import tools
 from threading import Thread
+
 
 FirstNumToCheck = 256
 SecondNumToCheck = 256
@@ -23,23 +26,45 @@ def batch(f):
         thread.join()
 
 def connect(first,second):
+    if tools.ourIp == tools.genIp(first, second):
+        return
     try:
         print('checking connection on ' + tools.genIp(first, second))
         s = soc.socket()
         s.settimeout(.2) # if thread error, change this value
         s.connect((tools.genIp(first,second),port))
-        s.send(b'test.txt')
-        confirm = s.recv(1024).decode()
-        print(confirm)
-        f = open ("ToSend/test.txt", "rb")
-        l = f.read(1024)
-        while (l):
-            s.send(l)
-            l = f.read(1024)
-        print("success")
+        for file in getfiles():
+            sendFile(file)
         s.close()
     except:
         pass
+
+def getfiles():
+    files = []
+
+    dirlist = ['ToSend']
+    while len(dirlist) > 0:
+        for (dirpath, dirnames, filenames) in os.walk(dirlist.pop()):
+            dirlist.extend(dirnames)
+            files.extend(map(lambda n: os.path.join(*n), zip([dirpath] * len(filenames), filenames)))
+    return files
+
+def sendFile(FileName):
+    if (FileName == ''):
+        return
+    s.send(FileName.encode())
+    confirm = s.recv(1024).decode()
+    if (confirm != 'FNR'):
+        print("Not our software!")
+        print(confirm)
+        return 
+    f = open (str("ToSend/" + FileName), "rb")
+    l = f.read(1024)
+    while (l):
+        s.send(l)
+        l = f.read(1024)
+    print("success")
+
 
 if __name__ == '__main__':
     #connect(58, 145)
