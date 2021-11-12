@@ -2,5 +2,6 @@
 A Network Programming Final Project by ...
 
 ## Features Include:
-+ Basic Multithreading
-+ ...
++ Automatic file transfer
++ Automatic SHA256 file validation
++ Multithreading

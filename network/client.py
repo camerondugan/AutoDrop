@@ -4,20 +4,24 @@ from network import tools
 #import tools
 from threading import Thread
 
-
 FirstNumToCheck = 256
 SecondNumToCheck = 256
 port=2272
+BUFFER=1024
 
 def runClient(fast):
     if (fast):
+        print('Quick Scan...')
         batch(tools.parseIP(tools.ourIp, 2))
+        print('Done')
+    print('Scanning...')
     for f in range(FirstNumToCheck):
         batch(f)
+    print('Done')
 
 def batch(f):
     threads = list()
-    print("Starting Batch " + str(f))
+    #print('Starting Batch ' + str(f))
     for sec in range(SecondNumToCheck):
         clientThread = Thread(target=connect, args=(f, sec,))
         threads.append(clientThread)
@@ -27,13 +31,15 @@ def batch(f):
 
 def connect(first,second):
     if tools.ourIp == tools.genIp(first, second):
-        print("hello me")
-        return
+        #print('hello me')
+        #return
+        pass
     try:
-        print('checking connection on ' + tools.genIp(first, second))
+        checkIp = tools.genIp(first,second)
         s = soc.socket()
         s.settimeout(.2) # if thread error, change this value
-        s.connect((tools.genIp(first,second),port))
+        s.connect((checkIp,port))
+        print('Connected to: ' + str(checkIp))
         for file in getfiles():
             sendFile(file,s)
         s.close()
@@ -53,25 +59,34 @@ def getfiles():
 def sendFile(FileName,s):
     if (FileName == ''):
         return
+    ourHash = tools.hash(FileName) + '0'
+    s.send(b'Sending File')
+    if (s.recv(BUFFER).decode() != 'Recieve Ready'):
+        print("Recieve Not Ready")
+        return
     FileName = FileName[FileName.find('/')+1:len(FileName)]
     FileName = FileName[FileName.find('\\')+1:len(FileName)]
-    print(FileName)
+    #print(FileName)
     s.send(FileName.encode())
-    confirm = s.recv(1024).decode()
+    confirm = s.recv(BUFFER).decode()
     if (confirm != 'FNR'):
-        print("Not our software!")
+        print('Connected to unrecognized client, they sent:')
         print(confirm)
         return 
-    f = open (str("ToSend/" + FileName), "rb")
-    l = f.read(1024)
-    while (l):
-        s.send(l)
-        l = f.read(1024)
-    print("success")
-
+    #Does server have file
+    s.send(b'File Status')
+    serverHash = s.recv(BUFFER).decode()
+    if (ourHash == serverHash):
+        s.send("Match".encode())
+    else:
+        s.send("NoMatch".encode())
+    #Send if file is incorrect
+    if (serverHash != ourHash):
+        f = open (str("ToSend/" + FileName), "rb")
+        l = f.read(BUFFER)
+        while (l):
+            s.send(l)
+            l = f.read(BUFFER)
 
 if __name__ == '__main__':
-    print(getfiles())
-    connect(60, 155)
-    #runClient(True)
-    #runClient(False)
+    runClient(True) #fast and slow

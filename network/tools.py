@@ -1,5 +1,6 @@
 #Things like network scanning and misc. methods
 import socket as soc
+import hashlib
 
 ourPort = 0000
 #Change below
@@ -46,13 +47,23 @@ def parseIP(ip,section):
         end == i
     return int(ip[start:end])
 
-#Currently just prints all the ports we want to check
+#tests gen ip (doesn't actually scan)
 def scan():
     for f in range(FirstNumToCheck):
         for s in range(SecondNumToCheck):
             print(genIp(f,s))
 
+#sha256 file hash generator
+def hash(filename):
+    ans = ""
+    sha256_hash = hashlib.sha256()
+    with open(filename,"rb") as f:
+        for block in iter(lambda: f.read(4096),b""):
+            sha256_hash.update(block)
+            ans += sha256_hash.hexdigest()
+    return ans
 
 if __name__ == '__main__':
     print(ourIp)
-    scan()
+    print(hash('./network/client.py'))
+    #scan()
