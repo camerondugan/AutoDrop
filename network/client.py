@@ -1,7 +1,7 @@
 import socket as soc
 import os
-from network import tools
-#import tools
+#from network import tools
+import tools
 from threading import Thread
 
 FirstNumToCheck = 256
@@ -36,19 +36,18 @@ def connect(first,second):
         pass
     try:
         checkIp = tools.genIp(first,second)
-        s = soc.socket()
-        s.settimeout(.2) # if thread error, change this value
-        s.connect((checkIp,port))
-        print('Connected to: ' + str(checkIp))
         for file in getfiles():
+            s = soc.socket()
+            s.settimeout(.2) # if thread error, change this value
+            s.connect((checkIp,port))
             sendFile(file,s)
-        s.close()
+            s.close()
+        print('Connection to -> ' + checkIP)
     except:
         pass
 
 def getfiles():
     files = []
-
     dirlist = ['ToSend']
     while len(dirlist) > 0:
         for (dirpath, dirnames, filenames) in os.walk(dirlist.pop()):
@@ -61,12 +60,15 @@ def sendFile(FileName,s):
         return
     ourHash = tools.hash(FileName) + '0'
     s.send(b'Sending File')
-    if (s.recv(BUFFER).decode() != 'Recieve Ready'):
+    recv = s.recv(BUFFER).decode()
+    if (recv != 'Recieve Ready'):
         print("Recieve Not Ready")
+        print("Recieved: " + recv)
         return
+    #Remove Start of file name
     FileName = FileName[FileName.find('/')+1:len(FileName)]
     FileName = FileName[FileName.find('\\')+1:len(FileName)]
-    #print(FileName)
+    #Send and confirm File name
     s.send(FileName.encode())
     confirm = s.recv(BUFFER).decode()
     if (confirm != 'FNR'):
@@ -79,7 +81,7 @@ def sendFile(FileName,s):
     if (ourHash == serverHash):
         s.send("Match".encode())
     else:
-        s.send("NoMatch".encode())
+        s.send("No Match".encode())
     #Send if file is incorrect
     if (serverHash != ourHash):
         f = open (str("ToSend/" + FileName), "rb")
@@ -87,6 +89,7 @@ def sendFile(FileName,s):
         while (l):
             s.send(l)
             l = f.read(BUFFER)
+    print(s.recv(BUFFER).decode())
 
 if __name__ == '__main__':
     runClient(True) #fast and slow

@@ -1,7 +1,7 @@
 import socket as soc
 import _thread
-from network import tools
-#import tools
+#from network import tools
+import tools
 
 BUFFER=1024
 
@@ -37,7 +37,7 @@ def handleAClient(s):
         if (request == 'File Status'):
             s.send(fileHash.encode())
             hashMatches = s.recv(BUFFER).decode()
-            if(hashMatches == 'NoMatch'):
+            if(hashMatches == 'No Match'):
                 if not f:
                     f = open(FileName,'wb')
                 #Write File
@@ -45,10 +45,10 @@ def handleAClient(s):
                 while (l):
                     f.write(l)    
                     l = s.recv(BUFFER)
+            s.send(b'File Recieved')
         else:
-            s.close()
-    else:
-        conn.close()
+            print("bad connection or client")
+    s.close()
 
 
 if __name__ == '__main__':
