@@ -1,7 +1,7 @@
 import socket as soc
 import _thread
-#from network import tools
-import tools
+from network import tools
+#import tools
 
 BUFFER=1024
 
