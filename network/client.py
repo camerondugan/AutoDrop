@@ -29,6 +29,12 @@ def batch(f):
     for thread in threads:
         thread.join()
 
+def makeRecieveFolder():
+    try:
+        os.makedirs("Recieved")
+    except:
+        pass
+
 def connect(first,second):
     if tools.ourIp == tools.genIp(first, second):
         #print('hello me')
@@ -92,4 +98,5 @@ def sendFile(FileName,s):
     print(s.recv(BUFFER).decode())
 
 if __name__ == '__main__':
+    makeRecieveFolder()
     runClient(True) #fast and slow
