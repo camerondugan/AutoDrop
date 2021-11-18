@@ -29,9 +29,9 @@ def batch(f):
     for thread in threads:
         thread.join()
 
-def makeRecieveFolder():
+def makeReceiveFolder():
     try:
-        os.makedirs("Recieved")
+        os.makedirs("Received")
     except:
         pass
 
@@ -68,9 +68,9 @@ def sendFile(FileName,s):
     ourHash = tools.hash(FileName) + '0'
     s.send(b'Sending File')
     recv = s.recv(BUFFER).decode()
-    if (recv != 'Recieve Ready'):
-        print("Recieve Not Ready")
-        print("Recieved: " + recv)
+    if (recv != 'Receive Ready'):
+        print("Receive Not Ready")
+        print("Received: " + recv)
         return
     #Remove Start of file name
     FileName = FileName[FileName.find('/')+1:len(FileName)]
@@ -99,5 +99,5 @@ def sendFile(FileName,s):
     print(s.recv(BUFFER).decode())
 
 if __name__ == '__main__':
-    makeRecieveFolder()
+    makeReceiveFolder()
     runClient(True) #fast and slow

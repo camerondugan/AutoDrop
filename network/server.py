@@ -19,7 +19,7 @@ def runServer():
 
 def makeUserFolder(ip):
     try:
-        os.makedirs(os.path.join("Recieved" ,ip))
+        os.makedirs(os.path.join("Received" ,ip))
     except:
         pass
 
@@ -28,10 +28,10 @@ def handleAClient(s,addr):
         return
     #handle client commands
     if (s.recv(BUFFER).decode() == 'Sending File'):
-        s.send(b'Recieve Ready')
+        s.send(b'Receive Ready')
         FileName = s.recv(BUFFER).decode()
         makeUserFolder(addr[0])
-        FileName = 'Recieved/' + addr[0] + '/' + FileName
+        FileName = 'Received/' + addr[0] + '/' + FileName
         s.send(b'FNR')
         fileHash = 'NoFile'
         try:
@@ -55,7 +55,7 @@ def handleAClient(s,addr):
                 while (l):
                     f.write(l)    
                     l = s.recv(BUFFER)
-            s.send(b'File Recieved')
+            s.send(b'File Received')
         else:
             print("bad connection or client")
     s.close()
