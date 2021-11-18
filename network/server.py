@@ -6,6 +6,10 @@ from network import tools
 
 BUFFER=1024
 
+'''
+standard code to create a tcp socket to accept connections that takes each connection
+and threads them separately (to handle multiple clients at once)
+'''
 def runServer():
     host=''
     port=2272
@@ -17,12 +21,20 @@ def runServer():
         print('Connection from: ' + str(addr))
         _thread.start_new(handleAClient, (conn,addr,))
 
+'''
+makes a sub-folder in the received directory for each established connection
+that sends over a file. sub directories are named by IP
+'''
 def makeUserFolder(ip):
     try:
         os.makedirs(os.path.join("Received" ,ip))
     except:
         pass
 
+
+'''
+takes a client conneciton and accepts files
+'''
 def handleAClient(s,addr):
     if (addr[0] == tools.ourIp):
         return

@@ -10,6 +10,10 @@ SecondNumToCheck = 256
 port=2272
 BUFFER=1024
 
+'''
+runClient is a quicker scan which checks IPs in your immediate sub-network before
+parsing through all systems on the network for connections
+'''
 def runClient(fast):
     if (fast):
         print('Quick Scan...')
@@ -20,6 +24,10 @@ def runClient(fast):
         batch(f)
     print('Done')
 
+'''
+batch divides up all the IPs the client needs to surf through into separate threads
+so the process doesn't take as long
+'''
 def batch(f):
     threads = list()
     #print('Starting Batch ' + str(f))
@@ -30,13 +38,20 @@ def batch(f):
     for thread in threads:
         thread.join()
 
+
+'''
+creates the directory to receive files if not already existant
+'''
 def makeReceiveFolder():
     try:
         os.makedirs("Received")
     except:
         pass
 
-
+'''
+attempts to connect to the given IP address, if the IP is the same as the clients,
+the connection is aborted
+'''
 def connect(first,second):
     if tools.ourIp == tools.genIp(first, second):
         #print('hello me')
@@ -45,24 +60,32 @@ def connect(first,second):
         try:
             checkIp = tools.genIp(first,second)
             for file in getfiles():
+                time.sleep(5)
                 s = soc.socket()
                 s.settimeout(.2) # if thread error, change this value
                 s.connect((checkIp,port))
                 sendFile(file,s)
                 s.close()
-            print('Connection to -> ' + checkIP)
+            print('Connection to -> ' + checkIp)
         except:
             pass
 
+'''
+retrieves the files that need to be sent to the other user from the ToSend directory
+'''
 def getfiles():
     files = []
     dirlist = ['ToSend']
     while len(dirlist) > 0:
+        #iterates through the directory and obtains all file names
         for (dirpath, dirnames, filenames) in os.walk(dirlist.pop()):
             dirlist.extend(dirnames)
             files.extend(map(lambda n: os.path.join(*n), zip([dirpath] * len(filenames), filenames)))
     return files
 
+'''
+encodes and sends the file passed in to the other user's server
+'''
 def sendFile(FileName,s):
     if (FileName == ''):
         return
