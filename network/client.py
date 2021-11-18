@@ -38,8 +38,7 @@ def makeRecieveFolder():
 def connect(first,second):
     if tools.ourIp == tools.genIp(first, second):
         #print('hello me')
-        #return
-        pass
+        return
     try:
         checkIp = tools.genIp(first,second)
         for file in getfiles():
