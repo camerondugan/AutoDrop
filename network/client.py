@@ -1,5 +1,6 @@
 import socket as soc
 import os
+import time
 from network import tools
 #import tools
 from threading import Thread
