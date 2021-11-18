@@ -35,21 +35,23 @@ def makeRecieveFolder():
     except:
         pass
 
+
 def connect(first,second):
     if tools.ourIp == tools.genIp(first, second):
         #print('hello me')
-        return
-    try:
-        checkIp = tools.genIp(first,second)
-        for file in getfiles():
-            s = soc.socket()
-            s.settimeout(.2) # if thread error, change this value
-            s.connect((checkIp,port))
-            sendFile(file,s)
-            s.close()
-        print('Connection to -> ' + checkIP)
-    except:
         pass
+    else:
+        try:
+            checkIp = tools.genIp(first,second)
+            for file in getfiles():
+                s = soc.socket()
+                s.settimeout(.2) # if thread error, change this value
+                s.connect((checkIp,port))
+                sendFile(file,s)
+                s.close()
+            print('Connection to -> ' + checkIP)
+        except:
+            pass
 
 def getfiles():
     files = []

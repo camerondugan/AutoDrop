@@ -1,5 +1,6 @@
 import socket as soc
 import _thread
+import os
 from network import tools
 #import tools
 
@@ -14,14 +15,23 @@ def runServer():
     while 1:
         conn, addr = server_socket.accept()
         print('Connection from: ' + str(addr))
-        _thread.start_new(handleAClient, (conn,))
+        _thread.start_new(handleAClient, (conn,addr,))
 
-def handleAClient(s):
+def makeUserFolder(ip):
+    try:
+        os.makedirs(os.path.join("Recieved" ,ip))
+    except:
+        pass
+
+def handleAClient(s,addr):
+    if (addr[0] == tools.ourIp):
+        return
     #handle client commands
     if (s.recv(BUFFER).decode() == 'Sending File'):
         s.send(b'Recieve Ready')
         FileName = s.recv(BUFFER).decode()
-        FileName = 'Recieved/' + FileName
+        makeUserFolder(addr[0])
+        FileName = 'Recieved/' + addr[0] + '/' + FileName
         s.send(b'FNR')
         fileHash = 'NoFile'
         try:
