@@ -2,13 +2,13 @@ import socket as soc
 import os
 import time
 from network import tools
-#import tools
 from threading import Thread
 
-FirstNumToCheck = 256
-SecondNumToCheck = 256
+maxThird = 256
+maxFourth = 256
 port=2272
 BUFFER=1024
+knownHosts = []
 
 '''
 runClient is a quicker scan which checks IPs in your immediate sub-network before
@@ -20,7 +20,7 @@ def runClient(fast):
         batch(tools.parseIP(tools.ourIp, 2))
         print('Done')
     print('Scanning...')
-    for f in range(FirstNumToCheck):
+    for f in range(maxThird):
         batch(f)
     print('Done')
 
@@ -31,8 +31,13 @@ so the process doesn't take as long
 def batch(f):
     threads = list()
     #print('Starting Batch ' + str(f))
-    for sec in range(SecondNumToCheck):
-        clientThread = Thread(target=connect, args=(f, sec,))
+    for sec in range(maxFourth):
+        reconnect()
+        '''
+        also reconnects to previously connected clients from earlier
+        in the session to ensure everything is up to date
+        '''
+        clientThread = Thread(target=connect, args=(tools.genIp(f, sec),))
         threads.append(clientThread)
         clientThread.start()
     for thread in threads:
@@ -52,13 +57,12 @@ def makeReceiveFolder():
 attempts to connect to the given IP address, if the IP is the same as the clients,
 the connection is aborted
 '''
-def connect(first,second):
-    if tools.ourIp == tools.genIp(first, second):
-        #print('hello me')
+def connect(checkIp):
+    if tools.ourIp == checkIp:
+        #This is our ip, don't try to connect
         pass
     else:
         try:
-            checkIp = tools.genIp(first,second)
             for file in getfiles():
                 time.sleep(5)
                 s = soc.socket()
@@ -67,8 +71,19 @@ def connect(first,second):
                 sendFile(file,s)
                 s.close()
             print('Connection to -> ' + checkIp)
+            if not knownHosts.__contains__(checkIp):
+                knownHosts.append(checkIp)
         except:
             pass
+
+'''
+reconnect attempts to establish connections with known hosts
+'''
+def reconnect():
+    for serverIp in knownHosts:
+        clientThread = Thread(target=connect, args=(serverIp,))
+        threads.append(clientThread)
+        clientThread.start()
 
 '''
 retrieves the files that need to be sent to the other user from the ToSend directory
@@ -115,12 +130,15 @@ def sendFile(FileName,s):
         s.send("No Match".encode())
     #Send if file is incorrect
     if (serverHash != ourHash):
-        f = open (str("ToSend/" + FileName), "rb")
-        l = f.read(BUFFER)
-        while (l):
-            s.send(l)
-            l = f.read(BUFFER)
+        sendBits(FileName,s)
     print(s.recv(BUFFER).decode())
+
+def sendBits(FileName, s):
+    f = open (str("ToSend/" + FileName), "rb")
+    l = f.read(BUFFER)
+    while (l):
+        s.send(l)
+        l = f.read(BUFFER)
 
 if __name__ == '__main__':
     makeReceiveFolder()

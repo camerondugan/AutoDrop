@@ -2,7 +2,6 @@ import socket as soc
 import _thread
 import os
 from network import tools
-#import tools
 
 BUFFER=1024
 
@@ -71,7 +70,6 @@ def handleAClient(s,addr):
         else:
             print("bad connection or client")
     s.close()
-
 
 if __name__ == '__main__':
     runServer()
