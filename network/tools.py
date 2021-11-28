@@ -53,7 +53,10 @@ def scan():
         for s in range(SecondNumToCheck):
             print(genIp(f,s))
 
-#sha256 file hash generator
+'''
+sha256 file hash generator adapted from 
+https://www.quickprogrammingtips.com/python/how-to-calculate-sha256-hash-of-a-file-in-python.html
+'''
 def hash(filename):
     ans = ""
     sha256_hash = hashlib.sha256()
